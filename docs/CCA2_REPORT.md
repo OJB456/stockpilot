@@ -4,7 +4,7 @@ GitHub Repository: https://github.com/OJB456/stockpilot (verified public)
 
 **Live Application:** Not deployed yet<br>
 **GitHub Actions:** [Green fixed-PR run](https://github.com/OJB456/stockpilot/actions/runs/36375640953) — lint/test and Docker smoke test passed, deploy skipped; [red failure-demo run](https://github.com/OJB456/stockpilot/actions/runs/36375525051)<br>
-**Commit Count:** 17 on `main` after this evidence update (verified with `git rev-list --count main`)
+**Commit Count:** 18 on `main` after these documentation updates (verified with `git rev-list --count main`)
 
 > This report records only verified results. Render deployment and live-site fields remain pending. Screenshot placeholders are not evidence.
 

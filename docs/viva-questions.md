@@ -1,10 +1,10 @@
 # StockPilot Viva Preparation
 
-## Explain My Project in 60 Seconds
+## Explain StockPilot in 60 Seconds
 
 StockPilot is a small inventory management web app for an online shop. It uses FastAPI to handle browser requests, Jinja2 to render pages, SQLAlchemy to work with the database, and SQLite to store products and transactions. Users can add products, sell stock and restock items. Every successful stock change is recorded, and the app prevents a sale from making stock negative. GitHub Actions runs linting, tests and a Docker smoke test. Only a successful push to `main` can trigger the Render deployment. The `/health` endpoint shows which commit is running.
 
-## Explain My CI/CD Pipeline in 60 Seconds
+## Explain the CI/CD Pipeline in 60 Seconds
 
 The workflow starts for pushes and pull requests. First, `lint-test` installs the development requirements, runs Flake8 and runs pytest against temporary SQLite databases. The `build` job depends on that job, so it is skipped if lint or tests fail. It builds the production Docker image, starts a container and checks `/health`, including the Git commit SHA. The `deploy` job depends on the build and only runs on a push to `main`. It uses a GitHub Actions secret to call Render's Deploy Hook. Pull requests can be checked but never deployed.
 
