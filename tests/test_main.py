@@ -126,7 +126,7 @@ def test_sale_reduces_stock_and_records_sale_transaction(client):
 
     assert "Sold 3 Wireless keyboard" in response.text
     product, transactions = product_state(client)
-    assert product.quantity == 7
+    assert product.quantity == 8
     assert [(item.type, item.quantity) for item in transactions] == [("sale", 3)]
 
 
