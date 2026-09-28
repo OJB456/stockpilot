@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Add Product{% endblock %}
+{% block content %}
+  <section class="page-heading form-heading">
+    <div>
+      <p class="eyebrow"><span class="eyebrow-line"></span> INVENTORY SETUP</p>
+      <h1>Add a product</h1>
+      <p class="lead">Add an item to your catalog and set a stock alert threshold.</p>
+    </div>
+    <a class="button button-secondary" href="/">← Back to dashboard</a>
+  </section>
+
+  <section class="panel form-panel">
+    <div class="form-intro">
+      <span class="form-icon" aria-hidden="true">＋</span>
+      <div><h2>Product details</h2><p>Fields marked with <span class="required-star">*</span> are required.</p></div>
+    </div>
+    {% if error %}<div class="notice notice-error form-notice" role="alert"><span class="notice-icon">!</span>{{ error }}</div>{% endif %}
+    <form class="product-form" method="post" action="/add">
+      <div class="field-group field-wide">
+        <label for="name">Product name <span class="required-star">*</span></label>
+        <input id="name" name="name" type="text" maxlength="120" placeholder="e.g. Wireless keyboard" value="{{ values.get('name', '') }}" required>
+      </div>
+      <div class="field-group">
+        <label for="sku">SKU <span class="required-star">*</span></label>
+        <input id="sku" name="sku" type="text" maxlength="40" placeholder="e.g. KEY-001" value="{{ values.get('sku', '') }}" required>
+        <span class="field-help">Spaces are trimmed and letters are uppercased.</span>
+      </div>
+      <div class="field-group">
+        <label for="quantity">Initial quantity <span class="required-star">*</span></label>
+        <div class="input-suffix"><input id="quantity" name="quantity" type="number" min="0" step="1" placeholder="0" value="{{ values.get('quantity', '') }}" required><span>units</span></div>
+      </div>
+      <div class="field-group">
+        <label for="price">Unit price <span class="required-star">*</span></label>
+        <div class="input-prefix"><span>$</span><input id="price" name="price" type="number" min="0" step="0.01" placeholder="0.00" value="{{ values.get('price', '') }}" required></div>
+      </div>
+      <div class="field-group">
+        <label for="low_stock_threshold">Low-stock threshold <span class="required-star">*</span></label>
+        <div class="input-suffix"><input id="low_stock_threshold" name="low_stock_threshold" type="number" min="0" step="1" placeholder="5" value="{{ values.get('low_stock_threshold', '') }}" required><span>units</span></div>
+        <span class="field-help">You’ll see a warning when stock drops below this number.</span>
+      </div>
+      <div class="form-actions field-wide">
+        <a class="button button-secondary" href="/">Cancel</a>
+        <button class="button button-primary" type="submit">Save product <span aria-hidden="true">→</span></button>
+      </div>
+    </form>
+  </section>
+{% endblock %}

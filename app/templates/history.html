@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Transaction History{% endblock %}
+{% block content %}
+  <section class="page-heading dashboard-heading">
+    <div>
+      <p class="eyebrow"><span class="eyebrow-line"></span> STOCK ACTIVITY</p>
+      <h1>Transaction history</h1>
+      <p class="lead">Every sale and restock, recorded as it happens.</p>
+    </div>
+    <a class="button button-secondary" href="/">← Back to dashboard</a>
+  </section>
+
+  <section class="panel inventory-panel">
+    <div class="panel-heading">
+      <div><p class="eyebrow">ACTIVITY LOG</p><h2>Recent transactions <span class="count-pill">{{ transactions|length }}</span></h2></div>
+      <span class="history-caption">Newest activity first</span>
+    </div>
+    {% if transactions %}
+      <div class="table-scroll">
+        <table class="history-table">
+          <thead><tr><th>Date &amp; time</th><th>Product</th><th>SKU</th><th>Type</th><th>Quantity</th></tr></thead>
+          <tbody>
+          {% for transaction, product in transactions %}
+            <tr>
+              <td><span class="history-date">{{ transaction.timestamp.strftime('%b %d, %Y') }}</span><span class="product-sub">{{ transaction.timestamp.strftime('%I:%M %p') }}</span></td>
+              <td><span class="product-name">{{ product.name }}</span></td>
+              <td><code class="sku-code">{{ product.sku }}</code></td>
+              <td>{% if transaction.type == 'sale' %}<span class="badge badge-sale">Sale</span>{% else %}<span class="badge badge-restock">Restock</span>{% endif %}</td>
+              <td><span class="quantity-number">{% if transaction.type == 'sale' %}−{% else %}+{% endif %}{{ transaction.quantity }}</span><span class="quantity-unit"> units</span></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <span class="empty-illustration" aria-hidden="true">↔</span>
+        <h3>No stock activity yet</h3>
+        <p>Sales and restocks will appear here once you update an item.</p>
+        <a class="button button-secondary" href="/">Go to inventory</a>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}

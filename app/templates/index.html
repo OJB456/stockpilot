@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+  <section class="page-heading dashboard-heading">
+    <div>
+      <p class="eyebrow"><span class="eyebrow-line"></span> INVENTORY OVERVIEW</p>
+      <h1>Your inventory,<br class="mobile-break"> at a glance.</h1>
+      <p class="lead">A clear view of what you have and what needs attention.</p>
+    </div>
+    <a class="button button-primary" href="/add"><span class="button-plus">+</span> Add product</a>
+  </section>
+
+  {% if message %}<div class="notice notice-success" role="status"><span class="notice-icon">✓</span>{{ message }}</div>{% endif %}
+  {% if error %}<div class="notice notice-error" role="alert"><span class="notice-icon">!</span>{{ error }}</div>{% endif %}
+
+  <section class="stats-grid" aria-label="Inventory summary">
+    <article class="stat-card">
+      <div class="stat-top"><span class="stat-label">Total products</span><span class="stat-icon icon-violet">▦</span></div>
+      <p class="stat-value">{{ total_products }}</p>
+      <p class="stat-note">Unique items in your catalog</p>
+    </article>
+    <article class="stat-card">
+      <div class="stat-top"><span class="stat-label">Stock units</span><span class="stat-icon icon-blue">▤</span></div>
+      <p class="stat-value">{{ total_units }}</p>
+      <p class="stat-note">Units currently on hand</p>
+    </article>
+    <article class="stat-card">
+      <div class="stat-top"><span class="stat-label">Inventory value</span><span class="stat-icon icon-green">$</span></div>
+      <p class="stat-value">${{ "%.2f"|format(inventory_value) }}</p>
+      <p class="stat-note">Based on current stock and price</p>
+    </article>
+    <article class="stat-card {% if low_stock_count %}stat-attention{% endif %}">
+      <div class="stat-top"><span class="stat-label">Low-stock products</span><span class="stat-icon icon-orange">!</span></div>
+      <p class="stat-value">{{ low_stock_count }}</p>
+      <p class="stat-note">Items below their threshold</p>
+    </article>
+  </section>
+
+  <section class="panel inventory-panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">PRODUCTS</p>
+        <h2>Inventory list <span class="count-pill">{{ total_products }}</span></h2>
+      </div>
+      <a class="text-link" href="/history">View transaction history <span aria-hidden="true">→</span></a>
+    </div>
+
+    {% if products %}
+      <div class="table-scroll">
+        <table class="inventory-table">
+          <thead><tr><th>Product</th><th>SKU</th><th>Quantity</th><th>Price</th><th>Threshold</th><th>Status</th><th>Stock actions</th></tr></thead>
+          <tbody>
+          {% for product in products %}
+            <tr>
+              <td><span class="product-name">{{ product.name }}</span><span class="product-sub">Added {{ product.created_at.strftime('%b %d, %Y') }}</span></td>
+              <td><code class="sku-code">{{ product.sku }}</code></td>
+              <td><span class="quantity-number">{{ product.quantity }}</span><span class="quantity-unit"> units</span></td>
+              <td>${{ "%.2f"|format(product.price) }}</td>
+              <td>{{ product.low_stock_threshold }} units</td>
+              <td>
+                {% if product.quantity == 0 %}<span class="badge badge-out">Out of stock</span>
+                {% elif product.quantity < product.low_stock_threshold %}<span class="badge badge-low">Low stock</span>
+                {% else %}<span class="badge badge-good">In stock</span>{% endif %}
+              </td>
+              <td>
+                <div class="row-actions">
+                  <form class="inline-action" method="post" action="/sell/{{ product.id }}">
+                    <label class="sr-only" for="sell-{{ product.id }}">Quantity to sell for {{ product.name }}</label>
+                    <input id="sell-{{ product.id }}" name="quantity" type="number" min="1" placeholder="Qty" required>
+                    <button class="mini-button mini-sell" type="submit">Sell</button>
+                  </form>
+                  <form class="inline-action" method="post" action="/restock/{{ product.id }}">
+                    <label class="sr-only" for="restock-{{ product.id }}">Quantity to restock for {{ product.name }}</label>
+                    <input id="restock-{{ product.id }}" name="quantity" type="number" min="1" placeholder="Qty" required>
+                    <button class="mini-button mini-restock" type="submit">Restock</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <span class="empty-illustration" aria-hidden="true">▦</span>
+        <h3>Your inventory starts here</h3>
+        <p>Add your first product to keep track of stock, value and activity.</p>
+        <a class="button button-primary" href="/add">Add your first product</a>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}
