@@ -1,10 +1,10 @@
-GitHub Repository: Not configured yet (this workspace has no Git remote)
+GitHub Repository: https://github.com/OJB456/stockpilot (verified public)
 
 # StockPilot — E-Commerce Inventory Management System
 
 **Live Application:** Not deployed yet<br>
-**GitHub Actions:** No remote Actions run is available yet<br>
-**Commit Count:** 10 after this documentation milestone (verify with `git rev-list --count main`)
+**GitHub Actions:** [Green pull-request run](https://github.com/OJB456/stockpilot/actions/runs/36375143772) — lint/test and Docker smoke test passed, deploy skipped; [initial main run](https://github.com/OJB456/stockpilot/actions/runs/36374877324) — deploy failed because the Render secret is missing<br>
+**Commit Count:** 10 at baseline commit `f57c1f1d79fc43fa2e9321c87f136493bde2bcb5`; refresh after the PR and failure-demo merges
 
 > This report records only results verified in the current workspace. Replace the pending entries with links and evidence after GitHub and Render are configured. Do not present the screenshot placeholders as evidence.
 
@@ -46,14 +46,14 @@ The `products` table stores a product name, unique SKU, non-negative quantity, u
 
 ## 7. CI/CD Pipeline
 
-The checked-in workflow is `.github/workflows/ci-cd.yml`. Its configured dependency chain is `lint-test` → `build` → `deploy`. The deploy job is limited to a push to `main`; pull requests cannot deploy. The build job starts the image and checks `/health` and the commit SHA. A successful remote Actions run has not yet been verified because no Git remote is configured.
+The checked-in workflow is `.github/workflows/ci-cd.yml`. Its configured dependency chain is `lint-test` → `build` → `deploy`. The deploy job is limited to a push to `main`; pull requests cannot deploy. The build job starts the image and checks `/health` and the commit SHA. The first main run passed lint/test and the Docker smoke test for `f57c1f1d79fc43fa2e9321c87f136493bde2bcb5`, then failed at deploy because `RENDER_DEPLOY_HOOK` was not configured. The real green pull-request run passed lint/test and build, with deploy skipped as required for a PR. The intentional test-failure run is still pending.
 
 **Screenshot placeholder — workflow file and a real green Actions run:**<br>
 `[ADD REAL GITHUB SCREENSHOTS AFTER PUSHING THE REPOSITORY]`
 
 ## 8. Testing
 
-Verified locally with Python 3.11.6: Flake8 completed successfully, and pytest reported **28 passed** using temporary SQLite databases. These are local results, not GitHub Actions results. Docker build and container smoke-test results are pending because the Docker daemon did not respond during this audit.
+Verified locally with Python 3.11.6: Flake8 completed successfully, and pytest reported **28 passed** using temporary SQLite databases. The first GitHub Actions run also passed its Flake8, pytest, Docker build, container startup and `/health` SHA smoke test. Its only failed job was deploy because the Render secret is not configured yet.
 
 **Screenshot placeholder — local lint and test output:**<br>
 `[ADD A REAL TERMINAL SCREENSHOT]`
@@ -84,7 +84,7 @@ The application returns `GIT_COMMIT`, then `RENDER_GIT_COMMIT`, and falls back t
 
 ## 12. Challenges
 
-The development requirements named `httpx2`, while FastAPI's test client requires `httpx`. The requirement was corrected to `httpx>=0.27,<1.0`; dependency installation then completed and all 28 local tests passed. The Docker client is present, but the daemon did not answer during this audit, so container verification remains pending.
+The development requirements named `httpx2`, while FastAPI's test client requires `httpx`. The requirement was corrected to `httpx>=0.27,<1.0`; dependency installation then completed and all 28 local tests passed. The local Docker engine returned an internal error, but GitHub Actions' independent Linux runner built and smoke-tested the image successfully.
 
 ## Conclusion
 

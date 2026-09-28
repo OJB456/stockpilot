@@ -2,7 +2,7 @@
 
 **StockPilot is a small e-commerce inventory dashboard built for the Cloud Computing and DevOps CCA 2 project.** It tracks products, stock levels, sales, restocks and inventory value through a browser interface.
 
-> CCA evidence links: GitHub repository **pending** · Live application **pending** · GitHub Actions **pending**. This workspace currently has no Git remote, so cloud URLs and Actions runs are not available yet.
+> CCA evidence links: GitHub repository [OJB456/stockpilot](https://github.com/OJB456/stockpilot) · Live application **pending Render setup** · [Green pull-request Actions run](https://github.com/OJB456/stockpilot/actions/runs/36375143772) · [Initial main run](https://github.com/OJB456/stockpilot/actions/runs/36374877324) (deploy awaits the Render secret).
 
 ## Project Overview
 
