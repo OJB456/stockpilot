@@ -3,7 +3,7 @@ GitHub Repository: https://github.com/OJB456/stockpilot (verified public)
 # StockPilot — E-Commerce Inventory Management System
 
 **Live Application:** Not deployed yet<br>
-**GitHub Actions:** [First run](https://github.com/OJB456/stockpilot/actions/runs/36374877324) — lint/test and Docker smoke test passed; deploy was blocked by the missing Render secret<br>
+**GitHub Actions:** [Green pull-request run](https://github.com/OJB456/stockpilot/actions/runs/36375143772) — lint/test and Docker smoke test passed, deploy skipped; [initial main run](https://github.com/OJB456/stockpilot/actions/runs/36374877324) — deploy failed because the Render secret is missing<br>
 **Commit Count:** 10 at baseline commit `f57c1f1d79fc43fa2e9321c87f136493bde2bcb5`; refresh after the PR and failure-demo merges
 
 > This report records only results verified in the current workspace. Replace the pending entries with links and evidence after GitHub and Render are configured. Do not present the screenshot placeholders as evidence.
@@ -46,7 +46,7 @@ The `products` table stores a product name, unique SKU, non-negative quantity, u
 
 ## 7. CI/CD Pipeline
 
-The checked-in workflow is `.github/workflows/ci-cd.yml`. Its configured dependency chain is `lint-test` → `build` → `deploy`. The deploy job is limited to a push to `main`; pull requests cannot deploy. The build job starts the image and checks `/health` and the commit SHA. In the first real run, lint/test and the Docker smoke test passed for `f57c1f1d79fc43fa2e9321c87f136493bde2bcb5`. The deploy step failed because `RENDER_DEPLOY_HOOK` was not configured. A complete green workflow and the intentional test-failure run are still pending.
+The checked-in workflow is `.github/workflows/ci-cd.yml`. Its configured dependency chain is `lint-test` → `build` → `deploy`. The deploy job is limited to a push to `main`; pull requests cannot deploy. The build job starts the image and checks `/health` and the commit SHA. The first main run passed lint/test and the Docker smoke test for `f57c1f1d79fc43fa2e9321c87f136493bde2bcb5`, then failed at deploy because `RENDER_DEPLOY_HOOK` was not configured. The real green pull-request run passed lint/test and build, with deploy skipped as required for a PR. The intentional test-failure run is still pending.
 
 **Screenshot placeholder — workflow file and a real green Actions run:**<br>
 `[ADD REAL GITHUB SCREENSHOTS AFTER PUSHING THE REPOSITORY]`
