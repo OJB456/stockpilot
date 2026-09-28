@@ -4,7 +4,7 @@ GitHub Repository: https://github.com/OJB456/stockpilot (verified public)
 
 **Live Application:** Not deployed yet<br>
 **GitHub Actions:** [Green fixed-PR run](https://github.com/OJB456/stockpilot/actions/runs/36375640953) — lint/test and Docker smoke test passed, deploy skipped; [red failure-demo run](https://github.com/OJB456/stockpilot/actions/runs/36375525051)<br>
-**Commit Count:** 18 on `main` after these documentation updates (verified with `git rev-list --count main`)
+**Commit Count:** 19 on `main` after the test-client dependency update (verified with `git rev-list --count main`)
 
 > This report records only verified results. Render deployment and live-site fields remain pending. Screenshot placeholders are not evidence.
 
@@ -84,7 +84,7 @@ The application returns `GIT_COMMIT`, then `RENDER_GIT_COMMIT`, and falls back t
 
 ## 12. Challenges
 
-The development requirements named `httpx2`, while FastAPI's test client requires `httpx`. The requirement was corrected to `httpx>=0.27,<1.0`; dependency installation then completed and all 28 local tests passed. The local Docker engine returned an internal error, but GitHub Actions' Linux runner built and smoke-tested the image successfully. The main deploy job correctly failed while the Render secret was absent.
+Starlette 1.7 prefers `httpx2` for its test client. GitHub Actions warned when only `httpx` was installed, so the development requirement was aligned with Starlette using `httpx2>=2.0,<3.0`; local and remote test runs pass. The local Docker engine returned an internal error, but GitHub Actions' Linux runner built and smoke-tested the image successfully. The main deploy job correctly failed while the Render secret was absent.
 
 ## Conclusion
 
