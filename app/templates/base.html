@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7fb">
+  <title>{% block title %}StockPilot{% endblock %} · StockPilot</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="StockPilot dashboard">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M6 23.5V8.5l10 7.2 10-7.2v15M6 8.5l10 7.2 10-7.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 25h10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </span>
+        <span>Stock<span class="brand-light">Pilot</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a class="nav-link {% if request.url.path == '/' %}active{% endif %}" href="/">Dashboard</a>
+        <a class="nav-link {% if request.url.path == '/add' %}active{% endif %}" href="/add">Add Product</a>
+        <a class="nav-link {% if request.url.path == '/history' %}active{% endif %}" href="/history">Transaction History</a>
+      </nav>
+      <a class="health-link" href="/health"><span class="health-dot"></span> Health</a>
+    </header>
+
+    <main class="page-content">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <span>© StockPilot · Simple inventory, in control.</span>
+      <span class="build-label">Running commit <code>{{ commit }}</code></span>
+    </footer>
+  </div>
+</body>
+</html>
