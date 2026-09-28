@@ -3,10 +3,10 @@ GitHub Repository: https://github.com/OJB456/stockpilot (verified public)
 # StockPilot — E-Commerce Inventory Management System
 
 **Live Application:** Not deployed yet<br>
-**GitHub Actions:** [Green pull-request run](https://github.com/OJB456/stockpilot/actions/runs/36375143772) — lint/test and Docker smoke test passed, deploy skipped; [initial main run](https://github.com/OJB456/stockpilot/actions/runs/36374877324) — deploy failed because the Render secret is missing<br>
-**Commit Count:** 10 at baseline commit `f57c1f1d79fc43fa2e9321c87f136493bde2bcb5`; refresh after the PR and failure-demo merges
+**GitHub Actions:** [Green fixed-PR run](https://github.com/OJB456/stockpilot/actions/runs/36375640953) — lint/test and Docker smoke test passed, deploy skipped; [red failure-demo run](https://github.com/OJB456/stockpilot/actions/runs/36375525051)<br>
+**Commit Count:** 17 on `main` after this evidence update (verified with `git rev-list --count main`)
 
-> This report records only results verified in the current workspace. Replace the pending entries with links and evidence after GitHub and Render are configured. Do not present the screenshot placeholders as evidence.
+> This report records only verified results. Render deployment and live-site fields remain pending. Screenshot placeholders are not evidence.
 
 ## 1. Problem Statement
 
@@ -46,7 +46,7 @@ The `products` table stores a product name, unique SKU, non-negative quantity, u
 
 ## 7. CI/CD Pipeline
 
-The checked-in workflow is `.github/workflows/ci-cd.yml`. Its configured dependency chain is `lint-test` → `build` → `deploy`. The deploy job is limited to a push to `main`; pull requests cannot deploy. The build job starts the image and checks `/health` and the commit SHA. The first main run passed lint/test and the Docker smoke test for `f57c1f1d79fc43fa2e9321c87f136493bde2bcb5`, then failed at deploy because `RENDER_DEPLOY_HOOK` was not configured. The real green pull-request run passed lint/test and build, with deploy skipped as required for a PR. The intentional test-failure run is still pending.
+The checked-in workflow is `.github/workflows/ci-cd.yml`. Its dependency chain is `lint-test` → `build` → `deploy`. Deploy runs only for a push to `main`; pull requests cannot deploy. The build starts the image and checks `/health` and the commit SHA. The real red run [36375525051](https://github.com/OJB456/stockpilot/actions/runs/36375525051) failed the deliberately incorrect sale assertion (actual quantity 7, expected 8), and both dependent jobs were skipped. The fixed PR run [36375640953](https://github.com/OJB456/stockpilot/actions/runs/36375640953) passed lint/test and build, with deploy skipped. After the fix was merged in PR #2, main run [36375726078](https://github.com/OJB456/stockpilot/actions/runs/36375726078) passed lint/test and build but failed at deploy because `RENDER_DEPLOY_HOOK` was not configured.
 
 **Screenshot placeholder — workflow file and a real green Actions run:**<br>
 `[ADD REAL GITHUB SCREENSHOTS AFTER PUSHING THE REPOSITORY]`
@@ -60,14 +60,14 @@ Verified locally with Python 3.11.6: Flake8 completed successfully, and pytest r
 
 ## 9. Failure Demonstration
 
-A real red GitHub Actions run has not yet been created or verified. The reproducible steps are documented in [docs/failure-demo.md](failure-demo.md). After publishing the repository, change the documented sale assertion on a demo branch, open a pull request, and capture the actual failed `lint-test` job with the dependent `build` and `deploy` jobs skipped. Then restore the assertion, capture the passing pull-request run and merge only after checks pass.
+A real red GitHub Actions run is verified on [PR #2](https://github.com/OJB456/stockpilot/pull/2). Run [36375525051](https://github.com/OJB456/stockpilot/actions/runs/36375525051) failed the sale test and marked `build` and `deploy` skipped. The failed commit was `3f3ceb96607ac33fe365d9a177cd47bec0cf8257`. Fix commit `9d996794c88851e40f88991f0f3851b45e67bf76` restored the correct assertion; run [36375640953](https://github.com/OJB456/stockpilot/actions/runs/36375640953) passed lint/test and Docker smoke test, with deploy skipped because it was a PR. PR #2 was merged as `4fe56160235f594469751dfa7a6be25a33479bad`. The steps and evidence URLs are recorded in [docs/failure-demo.md](failure-demo.md).
 
 **Screenshot placeholder — real red run and skipped jobs:**<br>
 `[ADD AFTER THE FAILURE EXERCISE HAS RUN ON GITHUB]`
 
 ## 10. Deployment
 
-`render.yaml` describes a Docker web service on `main`, with automatic deploys disabled and `/health` configured as the health check. No Render service or live URL has been verified yet. Deployment requires a public GitHub repository, a Render service, and the `RENDER_DEPLOY_HOOK` GitHub Actions secret.
+`render.yaml` describes a Docker web service on `main`, with automatic deploys disabled and `/health` configured as the health check. Post-merge main run [36375726078](https://github.com/OJB456/stockpilot/actions/runs/36375726078) passed lint/test and Docker build/smoke test but failed at deploy because no Render service or `RENDER_DEPLOY_HOOK` secret has been configured. No live URL is available yet.
 
 **Live Application URL:** Not available yet<br>
 **Screenshot placeholder — real Render deployment and live page:**<br>
@@ -77,29 +77,29 @@ A real red GitHub Actions run has not yet been created or verified. The reproduc
 
 The application returns `GIT_COMMIT`, then `RENDER_GIT_COMMIT`, and falls back to `local-dev`. The Docker smoke-test workflow supplies the current GitHub SHA. No deployed SHA has been verified yet.
 
-**GitHub merge commit SHA:** Not available yet<br>
+**GitHub merge commit SHA:** `4fe56160235f594469751dfa7a6be25a33479bad` (PR #2)<br>
 **Live `/health` commit SHA:** Not available yet<br>
 **Screenshot placeholder — live health response matched to the merge commit:**<br>
 `[ADD AFTER BOTH SHAS HAVE BEEN CHECKED]`
 
 ## 12. Challenges
 
-The development requirements named `httpx2`, while FastAPI's test client requires `httpx`. The requirement was corrected to `httpx>=0.27,<1.0`; dependency installation then completed and all 28 local tests passed. The local Docker engine returned an internal error, but GitHub Actions' independent Linux runner built and smoke-tested the image successfully.
+The development requirements named `httpx2`, while FastAPI's test client requires `httpx`. The requirement was corrected to `httpx>=0.27,<1.0`; dependency installation then completed and all 28 local tests passed. The local Docker engine returned an internal error, but GitHub Actions' Linux runner built and smoke-tested the image successfully. The main deploy job correctly failed while the Render secret was absent.
 
 ## Conclusion
 
-The application and local test suite are in place, and local lint and tests pass. The public repository, real red and green Actions runs, Docker smoke test, Render deployment and deployed SHA check still need external setup and verification before this report can be submitted as complete.
+The public repository, ten initial project milestones, real green and red Actions runs, blocked-build failure gate, fixed PR run and merge are verified. Render service creation, its Deploy Hook secret, a successful main deployment, a live URL and deployed SHA verification remain outstanding.
 
 ## Evidence Checklist
 
-- [ ] Public GitHub repository URL
-- [ ] Eight or more meaningful commits
+- [x] Public GitHub repository URL
+- [x] Eight or more meaningful commits
 - [ ] Dashboard, Add Product, sell, restock and low-stock screenshots
 - [ ] Transaction history screenshot
 - [ ] Workflow YAML screenshot
-- [ ] Real green and red Actions runs
-- [ ] Build and deploy shown skipped after the test failure
-- [ ] Fixed green pull-request run and merge
+- [x] Real green and red Actions runs
+- [x] Build and deploy shown skipped after the test failure
+- [x] Fixed green pull-request run and merge
 - [ ] Render deployment and live application URL
 - [ ] Live `/health` response and matching deployed SHA
 - [ ] GitHub Actions URL and verified commit count

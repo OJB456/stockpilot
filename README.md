@@ -2,7 +2,7 @@
 
 **StockPilot is a small e-commerce inventory dashboard built for the Cloud Computing and DevOps CCA 2 project.** It tracks products, stock levels, sales, restocks and inventory value through a browser interface.
 
-> CCA evidence links: GitHub repository [OJB456/stockpilot](https://github.com/OJB456/stockpilot) · Live application **pending Render setup** · [Green pull-request Actions run](https://github.com/OJB456/stockpilot/actions/runs/36375143772) · [Initial main run](https://github.com/OJB456/stockpilot/actions/runs/36374877324) (deploy awaits the Render secret).
+> CCA evidence links: GitHub repository [OJB456/stockpilot](https://github.com/OJB456/stockpilot) · Live application **pending Render setup** · [Green fixed-PR run](https://github.com/OJB456/stockpilot/actions/runs/36375640953) · [Red failure-demo run](https://github.com/OJB456/stockpilot/actions/runs/36375525051).
 
 ## Project Overview
 
@@ -136,7 +136,7 @@ The value is read from `GIT_COMMIT`, then `RENDER_GIT_COMMIT`, then `local-dev`.
 
 ## Failure Demonstration
 
-The project includes steps for one real intentionally failed test run, the skipped build and deployment jobs, a correction, and a successful follow-up run. The failed run and screenshots must come from GitHub Actions after the branch is pushed; none are pre-created or fabricated. Follow [docs/failure-demo.md](docs/failure-demo.md).
+The real failure demo ran on [PR #2](https://github.com/OJB456/stockpilot/pull/2). In the [red Actions run](https://github.com/OJB456/stockpilot/actions/runs/36375525051), one sale assertion was changed from 7 to 8. The test reported actual stock 7 versus expected 8, and the dependent build and deploy jobs were skipped. The assertion was restored in commit `9d996794c88851e40f88991f0f3851b45e67bf76`; the [fixed PR run](https://github.com/OJB456/stockpilot/actions/runs/36375640953) passed lint, tests and Docker smoke test, with deploy skipped for the pull request. PR #2 was merged as `4fe56160235f594469751dfa7a6be25a33479bad`. The post-merge main run passed lint/test and build but could not deploy because the Render secret is not configured. See [docs/failure-demo.md](docs/failure-demo.md).
 
 ## Testing
 

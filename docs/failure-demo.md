@@ -1,8 +1,19 @@
 # Real GitHub Actions Failure Demonstration
 
-This exercise creates one real test failure on GitHub. Do it only after the repository is public, the workflow is present on `main`, and the workflow has at least one successful run. Keep the intentionally failing assertion to one line.
+This failure exercise has been completed on the public repository. The verified run record is below. The remaining numbered steps document how to reproduce the demonstration if needed; they are not unverified results.
 
-## Before the Demo
+## Verified Run Record
+
+- Pull request: [#2](https://github.com/OJB456/stockpilot/pull/2)
+- Broken-test commit: `3f3ceb96607ac33fe365d9a177cd47bec0cf8257`
+- Real red Actions run: [36375525051](https://github.com/OJB456/stockpilot/actions/runs/36375525051)
+- Failure: the sale test expected quantity 8, while the application correctly returned 7. `lint-test` failed; dependent `build` and `deploy` jobs were skipped.
+- Fix commit: `9d996794c88851e40f88991f0f3851b45e67bf76`
+- Real fixed green PR run: [36375640953](https://github.com/OJB456/stockpilot/actions/runs/36375640953). Lint, all 28 tests, Docker build and `/health` SHA smoke test passed; deploy was skipped because the run was a pull request.
+- Merge commit: `4fe56160235f594469751dfa7a6be25a33479bad`
+- Post-merge main run: [36375726078](https://github.com/OJB456/stockpilot/actions/runs/36375726078). Lint/test and build passed; deploy failed because `RENDER_DEPLOY_HOOK` was not configured. A Render service and live URL remain pending.
+
+## Reproduce the Demo: Prerequisites
 
 - Push StockPilot to a public GitHub repository.
 - Confirm `.github/workflows/ci-cd.yml` is visible on `main`.
@@ -51,15 +62,15 @@ This exercise creates one real test failure on GitHub. Do it only after the repo
    ```
 
 10. Wait for the new PR run. Expected result: `lint-test` and `build` pass; `deploy` is skipped because the event is still a pull request. Capture the green run and the skipped deploy job.
-11. Merge the pull request to `main`. The push event on `main` runs the workflow again. After lint, Docker build and smoke test succeed, the deploy job sends the exact pushed SHA to Render.
-12. Open the GitHub merge commit, the Render service's successful deploy, and the live application. Compare the commit shown in `/health` and the footer with the deployed merge commit.
+11. Merge the pull request to `main`. The push event on `main` runs the workflow again. The recorded main run passed lint, Docker build and smoke test but could not deploy until the Render service and GitHub secret are configured.
+12. After Render is configured, verify the completed service deployment and live application. Compare the commit shown in `/health` and the footer with the deployed merge commit before reporting deployment as successful.
 
 ## Evidence to Save
 
-- The failed Actions run with the actual assertion failure.
+- [The failed Actions run](https://github.com/OJB456/stockpilot/actions/runs/36375525051) with the actual assertion failure.
 - The run graph showing `build` and `deploy` skipped.
-- The fixed PR run showing successful lint/test and build, and skipped deploy.
-- The successful `main` run and Render deployment.
+- [The fixed PR run](https://github.com/OJB456/stockpilot/actions/runs/36375640953) showing successful lint/test and build, and skipped deploy.
+- A successful `main` run and Render deployment (still pending the Render service and secret).
 - The live dashboard and `/health` response showing the merge commit SHA.
 
 Use screenshots from your own GitHub and Render accounts. Do not create or edit screenshots to imply a run or deployment that did not happen. A Deploy Hook request being accepted starts a Render deploy; confirm the deploy is complete in Render and verify the live health response before reporting deployment as successful.
